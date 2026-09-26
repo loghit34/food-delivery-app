@@ -47,18 +47,29 @@ class OrderModel {
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     VendorModel? vendor;
     if (json['vendors'] is Map<String, dynamic>) {
-      vendor = VendorModel.fromJson(json['vendors']);
+      vendor = VendorModel.fromJson(json['vendors'] as Map<String, dynamic>);
+    } else if (json['vendors'] is List && (json['vendors'] as List).isNotEmpty) {
+      final first = (json['vendors'] as List).first;
+      if (first is Map<String, dynamic>) {
+        vendor = VendorModel.fromJson(first);
+      }
     }
 
     ProfileModel? customer;
     if (json['profiles'] is Map<String, dynamic>) {
-      customer = ProfileModel.fromJson(json['profiles']);
+      customer = ProfileModel.fromJson(json['profiles'] as Map<String, dynamic>);
+    } else if (json['profiles'] is List && (json['profiles'] as List).isNotEmpty) {
+      final first = (json['profiles'] as List).first;
+      if (first is Map<String, dynamic>) {
+        customer = ProfileModel.fromJson(first);
+      }
     }
 
     List<OrderItemModel> items = [];
     if (json['order_items'] is List) {
       items = (json['order_items'] as List)
-          .map((i) => OrderItemModel.fromJson(i as Map<String, dynamic>))
+          .whereType<Map<String, dynamic>>()
+          .map((i) => OrderItemModel.fromJson(i))
           .toList();
     }
 

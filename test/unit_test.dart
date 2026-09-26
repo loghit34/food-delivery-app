@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:uem_eats/models/profile_model.dart';
 import 'package:uem_eats/models/vendor_model.dart';
 import 'package:uem_eats/models/menu_item_model.dart';
+import 'package:uem_eats/models/order_model.dart';
 import 'package:uem_eats/providers/cart_provider.dart';
 import 'package:uem_eats/core/utils/currency_formatter.dart';
 import 'package:uem_eats/core/constants/app_constants.dart';
@@ -40,6 +41,49 @@ void main() {
 
       expect(vendor.vendorName, 'Campus Bites');
       expect(vendor.isActive, isTrue);
+    });
+
+    test('ProfileModel handles missing id and falls back safely', () {
+      final profile = ProfileModel.fromJson({
+        'name': 'Priya Das',
+        'email': 'priya@uem.edu.in',
+        'role': 'STUDENT',
+      });
+
+      expect(profile.id, '');
+      expect(profile.name, 'Priya Das');
+      expect(profile.role, 'STUDENT');
+    });
+
+    test('OrderModel deserializes vendor orders with joined profiles safely', () {
+      final order = OrderModel.fromJson({
+        'id': 'ord-101',
+        'vendor_id': 'vendor-1',
+        'item_total': '120.00',
+        'total_amount': '124.00',
+        'status': 'PENDING',
+        'profiles': {
+          'name': 'Ananya Roy',
+          'role': 'FACULTY',
+        },
+        'vendors': {
+          'vendor_name': 'Campus Bites',
+          'location': 'Ground Floor',
+        },
+        'order_items': [
+          {
+            'item_name': 'Sandwich',
+            'price': 60.0,
+            'quantity': 2,
+          }
+        ],
+      });
+
+      expect(order.id, 'ord-101');
+      expect(order.customer?.name, 'Ananya Roy');
+      expect(order.customer?.role, 'FACULTY');
+      expect(order.vendor?.vendorName, 'Campus Bites');
+      expect(order.items.length, 1);
     });
   });
 

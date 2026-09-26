@@ -21,7 +21,7 @@ class VendorModel {
 
   factory VendorModel.fromJson(Map<String, dynamic> json) {
     return VendorModel(
-      id: json['id'] as String,
+      id: (json['id'] ?? '') as String,
       ownerId: json['owner_id'] as String?,
       vendorName: (json['vendor_name'] ?? 'Canteen') as String,
       description: json['description'] as String?,
