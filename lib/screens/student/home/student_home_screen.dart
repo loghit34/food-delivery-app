@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/vendor_provider.dart';
@@ -77,7 +78,7 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
                 padding: const EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFE23744), Color(0xFFB91C1C)],
+                    colors: [AppColors.primary, AppColors.primaryDark],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -332,6 +333,20 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
                     ),
                   ),
                 ],
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => context.push('/menu/${vendor.id}'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    child: const Text('View Menu →', style: TextStyle(fontWeight: FontWeight.w700)),
+                  ),
+                ),
               ],
             ),
           ),

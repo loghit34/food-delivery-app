@@ -72,6 +72,35 @@ class ApiClient {
     }
   }
 
+  static Future<dynamic> put(String endpoint, {Map<String, dynamic>? body}) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.put(
+        _getUri(endpoint),
+        headers: headers,
+        body: body != null ? jsonEncode(body) : null,
+      );
+      return _handleResponse(response);
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Network connection failed. Please check your internet connection.');
+    }
+  }
+
+  static Future<dynamic> delete(String endpoint) async {
+    try {
+      final headers = await _getHeaders();
+      final response = await http.delete(
+        _getUri(endpoint),
+        headers: headers,
+      );
+      return _handleResponse(response);
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Network connection failed. Please check your internet connection.');
+    }
+  }
+
   static dynamic _handleResponse(http.Response response) {
     dynamic jsonBody;
     try {

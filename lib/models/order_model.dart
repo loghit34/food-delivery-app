@@ -39,10 +39,17 @@ class OrderModel {
 
   bool get isCompleted => status.toUpperCase() == 'COMPLETED';
   bool get isPending => status.toUpperCase() == 'PENDING';
+  ProfileModel? get profile => customer;
 
   String get displayOrderNumber => dailyOrderNumber != null
       ? '#$dailyOrderNumber'
-      : '#${id.substring(0, 6).toUpperCase()}';
+      : (id.isNotEmpty
+          ? '#${id.length >= 6 ? id.substring(0, 6).toUpperCase() : id.toUpperCase()}'
+          : '#ORD');
+
+  double get vendorEarnings => (itemTotal > 0)
+      ? itemTotal
+      : (totalAmount >= convenienceFee ? totalAmount - convenienceFee : totalAmount);
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     VendorModel? vendor;
@@ -74,9 +81,9 @@ class OrderModel {
     }
 
     return OrderModel(
-      id: json['id'] as String,
-      userId: json['user_id'] as String?,
-      vendorId: (json['vendor_id'] ?? '') as String,
+      id: (json['id'] ?? '').toString(),
+      userId: json['user_id']?.toString(),
+      vendorId: (json['vendor_id'] ?? '').toString(),
       itemTotal: (json['item_total'] != null)
           ? double.tryParse(json['item_total'].toString()) ?? 0.0
           : 0.0,
@@ -86,9 +93,9 @@ class OrderModel {
       totalAmount: (json['total_amount'] != null)
           ? double.tryParse(json['total_amount'].toString()) ?? 0.0
           : 0.0,
-      paymentId: json['payment_id'] as String?,
-      status: (json['status'] ?? 'PENDING') as String,
-      orderDate: json['order_date'] as String?,
+      paymentId: json['payment_id']?.toString(),
+      status: (json['status'] ?? 'PENDING').toString(),
+      orderDate: json['order_date']?.toString(),
       dailyOrderNumber: json['daily_order_number'] != null
           ? int.tryParse(json['daily_order_number'].toString())
           : null,

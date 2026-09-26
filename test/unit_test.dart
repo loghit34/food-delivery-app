@@ -1,11 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uem_eats/models/profile_model.dart';
 import 'package:uem_eats/models/vendor_model.dart';
 import 'package:uem_eats/models/menu_item_model.dart';
 import 'package:uem_eats/models/order_model.dart';
+import 'package:uem_eats/providers/admin_provider.dart';
 import 'package:uem_eats/providers/cart_provider.dart';
 import 'package:uem_eats/core/utils/currency_formatter.dart';
 import 'package:uem_eats/core/constants/app_constants.dart';
+import 'package:uem_eats/repositories/payment_repository.dart';
+import 'package:uem_eats/screens/admin/dashboard/admin_dashboard_screen.dart';
 
 void main() {
   group('Domain Models Test', () {
@@ -128,6 +133,72 @@ void main() {
       final addedFromB = cartNotifier.addItem(itemB, vendorB);
       expect(addedFromB, isFalse); // Blocked by single-vendor rule
       expect(cartNotifier.state.vendor?.id, 'v1');
+
+      // Now replace cart with vendor B item
+      cartNotifier.replaceCartWithItem(itemB, vendorB);
+      expect(cartNotifier.state.vendor?.id, 'v2');
+      expect(cartNotifier.state.items.length, 1);
+      expect(cartNotifier.state.items.first.item.id, 'item-2');
+    });
+  });
+
+  group('Razorpay Models Test', () {
+    test('PaymentOrderInitResponse deserialization parses all fields properly', () {
+      final response = PaymentOrderInitResponse.fromJson({
+        'keyId': 'rzp_test_12345',
+        'orderId': 'order_DBJOWzybf0sJbb',
+        'amount': 6200,
+        'currency': 'INR',
+        'verifiedTotal': 62.0,
+        'itemTotal': 58.0,
+        'convenienceFee': 4.0,
+      });
+
+      expect(response.keyId, 'rzp_test_12345');
+      expect(response.orderId, 'order_DBJOWzybf0sJbb');
+      expect(response.amount, 6200);
+      expect(response.currency, 'INR');
+      expect(response.verifiedTotal, 62.0);
+      expect(response.itemTotal, 58.0);
+      expect(response.convenienceFee, 4.0);
+    });
+  });
+
+  group('Role & Earnings Tests', () {
+    test('ProfileModel identifies Admin and Faculty roles correctly', () {
+      final admin = ProfileModel.fromJson({
+        'id': 'admin-uuid',
+        'name': 'System Administrator',
+        'email': 'admin@uem.edu.in',
+        'role': 'ADMIN',
+      });
+      expect(admin.isAdmin, isTrue);
+      expect(admin.isVendor, isFalse);
+      expect(admin.isStudentOrFaculty, isFalse);
+
+      final faculty = ProfileModel.fromJson({
+        'id': 'faculty-uuid',
+        'name': 'Prof. Mukherjee',
+        'email': 'mukherjee@uem.edu.in',
+        'role': 'FACULTY',
+      });
+      expect(faculty.isAdmin, isFalse);
+      expect(faculty.isStudentOrFaculty, isTrue);
+    });
+
+    test('OrderModel vendor earnings excludes ₹4 platform convenience fee', () {
+      final order = OrderModel.fromJson({
+        'id': 'ord-earn-1',
+        'vendor_id': 'vendor-1',
+        'item_total': 250.00,
+        'convenience_fee': 4.00,
+        'total_amount': 254.00,
+        'status': 'COMPLETED',
+      });
+
+      expect(order.vendorEarnings, 250.00);
+      expect(order.totalAmount, 254.00);
+      expect(order.convenienceFee, 4.00);
     });
   });
 
@@ -135,6 +206,78 @@ void main() {
     test('CurrencyFormatter produces correct INR format', () {
       expect(CurrencyFormatter.format(154.0), contains('154'));
       expect(CurrencyFormatter.format(null), '₹0.00');
+    });
+  });
+
+  group('Admin Dashboard Responsive Layout Tests', () {
+    testWidgets('Renders all management cards without overflow on narrow 320px width screen', (tester) async {
+      tester.view.physicalSize = const Size(320, 640);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            adminUsersProvider.overrideWith((ref) async => [
+              ProfileModel(id: 'u1', name: 'User 1', email: 'u1@uem.edu.in', role: 'STUDENT'),
+            ]),
+            adminVendorsProvider.overrideWith((ref) async => [
+              VendorModel(id: 'v1', vendorName: 'Very Long Vendor Name Canteen Food Court Stall', isActive: true),
+            ]),
+            adminOrdersProvider.overrideWith((ref) async => [
+              OrderModel(id: 'o1', vendorId: 'v1', itemTotal: 100, totalAmount: 104, status: 'COMPLETED'),
+            ]),
+          ],
+          child: const MaterialApp(
+            home: AdminDashboardScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Vendor & Canteen Management'), findsOneWidget);
+      expect(find.text('User Management'), findsOneWidget);
+      expect(find.text('Global Paid Orders'), findsOneWidget);
+      expect(find.byIcon(Icons.chevron_right), findsNWidgets(3));
+    });
+
+    testWidgets('Renders properly on standard 360px Android phone screen', (tester) async {
+      tester.view.physicalSize = const Size(360, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            adminUsersProvider.overrideWith((ref) async => [
+              ProfileModel(id: 'u1', name: 'User 1', email: 'u1@uem.edu.in', role: 'STUDENT'),
+            ]),
+            adminVendorsProvider.overrideWith((ref) async => [
+              VendorModel(id: 'v1', vendorName: 'Canteen Stall 1', isActive: true),
+            ]),
+            adminOrdersProvider.overrideWith((ref) async => [
+              OrderModel(id: 'o1', vendorId: 'v1', itemTotal: 100, totalAmount: 104, status: 'COMPLETED'),
+            ]),
+          ],
+          child: const MaterialApp(
+            home: AdminDashboardScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Vendor & Canteen Management'), findsOneWidget);
+      expect(find.text('User Management'), findsOneWidget);
+      expect(find.text('Global Paid Orders'), findsOneWidget);
+      expect(find.byIcon(Icons.chevron_right), findsNWidgets(3));
     });
   });
 }

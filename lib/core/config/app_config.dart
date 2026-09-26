@@ -16,7 +16,7 @@ class AppConfig {
     supabaseAnonKey =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFidW9wam5ic3BudXNpamp0bnVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNzQxNDYsImV4cCI6MjEwNDg1MDE0Nn0.HWQexbBGPlWj5xHeG-Y9du57rtuJvGXYh7sAAKJLEjc';
     apiBaseUrl = 'https://uem-foodyy.vercel.app/api';
-    razorpayKeyId = '';
+    razorpayKeyId = 'rzp_test_TfwGbybAuVJhvq';
 
     try {
       final envString = await rootBundle.loadString('.env');

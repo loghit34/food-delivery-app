@@ -22,8 +22,21 @@ final vendorMenuProvider =
   return await repo.getMenuItems(vendorId);
 });
 
+/// Fetches a specific vendor by ID
+final vendorByIdProvider =
+    FutureProvider.family<VendorModel, String>((ref, vendorId) async {
+  final repo = ref.watch(vendorRepositoryProvider);
+  return await repo.getVendorById(vendorId);
+});
+
 /// Fetches vendor store for logged-in vendor user
 final myVendorStoreProvider = FutureProvider<VendorModel?>((ref) async {
   final repo = ref.watch(vendorRepositoryProvider);
   return await repo.getMyVendorStore();
+});
+
+/// Fetches vendor analytics metrics
+final vendorAnalyticsProvider = FutureProvider<Map<String, dynamic>>((ref) async {
+  final repo = ref.watch(vendorRepositoryProvider);
+  return await repo.getVendorAnalytics();
 });

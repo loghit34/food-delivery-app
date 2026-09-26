@@ -23,16 +23,16 @@ class MenuItemModel {
 
   factory MenuItemModel.fromJson(Map<String, dynamic> json) {
     return MenuItemModel(
-      id: json['id'] as String,
-      vendorId: (json['vendor_id'] ?? '') as String,
-      name: (json['name'] ?? '') as String,
-      description: json['description'] as String?,
+      id: (json['id'] ?? '').toString(),
+      vendorId: (json['vendor_id'] ?? '').toString(),
+      name: (json['name'] ?? '').toString(),
+      description: json['description']?.toString(),
       price: (json['price'] != null)
           ? double.tryParse(json['price'].toString()) ?? 0.0
           : 0.0,
-      image: json['image'] as String?,
+      image: json['image']?.toString(),
       isAvailable: json['is_available'] as bool? ?? true,
-      category: (json['category'] ?? 'Main Course') as String,
+      category: (json['category'] ?? 'Main Course').toString(),
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString())
           : null,

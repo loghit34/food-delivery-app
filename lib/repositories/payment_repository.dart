@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/network/api_client.dart';
 import '../models/cart_item_model.dart';
 
@@ -99,7 +100,10 @@ class PaymentRepository {
         'razorpay_signature': razorpaySignature,
       },
     );
-
     return PaymentVerificationResult.fromJson(response as Map<String, dynamic>);
   }
 }
+
+final paymentRepositoryProvider = Provider<PaymentRepository>((ref) {
+  return PaymentRepository();
+});

@@ -21,12 +21,12 @@ class VendorModel {
 
   factory VendorModel.fromJson(Map<String, dynamic> json) {
     return VendorModel(
-      id: (json['id'] ?? '') as String,
-      ownerId: json['owner_id'] as String?,
-      vendorName: (json['vendor_name'] ?? 'Canteen') as String,
-      description: json['description'] as String?,
-      location: json['location'] as String?,
-      image: json['image'] as String?,
+      id: (json['id'] ?? '').toString(),
+      ownerId: json['owner_id']?.toString(),
+      vendorName: (json['vendor_name'] ?? 'Canteen').toString(),
+      description: json['description']?.toString(),
+      location: json['location']?.toString(),
+      image: json['image']?.toString(),
       isActive: json['is_active'] as bool? ?? true,
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString())

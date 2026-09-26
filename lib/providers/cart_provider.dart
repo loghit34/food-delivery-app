@@ -63,6 +63,14 @@ class CartNotifier extends StateNotifier<CartState> {
     return true;
   }
 
+  /// Discards previous vendor's items and adds the new item
+  void replaceCartWithItem(MenuItemModel item, VendorModel vendor) {
+    state = CartState(
+      vendor: vendor,
+      items: [CartItemModel(item: item, quantity: 1)],
+    );
+  }
+
   void updateQuantity(String itemId, int delta) {
     final currentItems = List<CartItemModel>.from(state.items);
     final index = currentItems.indexWhere((i) => i.item.id == itemId);

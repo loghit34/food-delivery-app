@@ -24,6 +24,25 @@ class DateFormatter {
     return DateFormat('d MMM y, h:mm a').format(ist);
   }
 
+  static String formatDate(dynamic date) {
+    if (date == null) return '';
+    DateTime dt;
+    if (date is DateTime) {
+      dt = date;
+    } else if (date is String) {
+      try {
+        dt = DateTime.parse(date);
+      } catch (_) {
+        return date;
+      }
+    } else {
+      return '';
+    }
+
+    final ist = dt.toUtc().add(const Duration(hours: 5, minutes: 30));
+    return DateFormat('d MMM y').format(ist);
+  }
+
   static String formatTimeAgo(dynamic date) {
     if (date == null) return '';
     DateTime dt;

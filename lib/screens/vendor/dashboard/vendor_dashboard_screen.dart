@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
@@ -20,11 +22,66 @@ class VendorDashboardScreen extends ConsumerStatefulWidget {
 class _VendorDashboardScreenState extends ConsumerState<VendorDashboardScreen> {
   String _selectedTab = 'PENDING'; // 'PENDING' | 'COMPLETED'
   String _selectedRoleFilter = 'ALL'; // 'ALL' | 'STUDENT' | 'FACULTY'
+  bool _soundEnabled = true;
+  Timer? _pollingTimer;
+  Set<String> _previousPendingOrderIds = {};
+  bool _isInitialLoad = true;
+
+  String _getTodayIST() {
+    final now = DateTime.now().toUtc().add(const Duration(hours: 5, minutes: 30));
+    return '${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pollingTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+      ref.invalidate(vendorOrdersProvider);
+    });
+  }
+
+  @override
+  void dispose() {
+    _pollingTimer?.cancel();
+    super.dispose();
+  }
+
+  void _checkNewIncomingOrders(List<OrderModel> orders) {
+    final currentPending = orders
+        .where((o) => o.status == 'PENDING')
+        .map((o) => o.id)
+        .toSet();
+
+    if (!_isInitialLoad && _previousPendingOrderIds.isNotEmpty) {
+      final hasNew = currentPending.difference(_previousPendingOrderIds).isNotEmpty;
+      if (hasNew) {
+        if (_soundEnabled) {
+          SystemSound.play(SystemSoundType.alert);
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('🔔 New incoming order received!'),
+                backgroundColor: AppColors.primary,
+                duration: Duration(seconds: 3),
+              ),
+            );
+          }
+        });
+      }
+    }
+
+    _isInitialLoad = false;
+    _previousPendingOrderIds = currentPending;
+  }
 
   @override
   Widget build(BuildContext context) {
     final storeAsync = ref.watch(myVendorStoreProvider);
     final ordersAsync = ref.watch(vendorOrdersProvider);
+
+    ordersAsync.whenData((orders) => _checkNewIncomingOrders(orders));
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -48,6 +105,22 @@ class _VendorDashboardScreenState extends ConsumerState<VendorDashboardScreen> {
           error: (_, __) => const Text('Vendor Dashboard'),
         ),
         actions: [
+          IconButton(
+            icon: Icon(
+              _soundEnabled ? Icons.volume_up : Icons.volume_off,
+              color: _soundEnabled ? AppColors.primary : AppColors.textMuted,
+            ),
+            tooltip: _soundEnabled ? 'Mute Chime' : 'Enable Chime',
+            onPressed: () {
+              setState(() => _soundEnabled = !_soundEnabled);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(_soundEnabled ? '🔔 Order chime enabled' : '🔕 Order chime muted'),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.refresh, color: AppColors.secondary),
             tooltip: 'Refresh Orders',
@@ -90,7 +163,16 @@ class _VendorDashboardScreenState extends ConsumerState<VendorDashboardScreen> {
                       title: '✅ Completed',
                       tabValue: 'COMPLETED',
                       badgeCount: ordersAsync.value
-                              ?.where((o) => o.status == 'COMPLETED')
+                              ?.where((o) =>
+                                  o.status == 'COMPLETED' &&
+                                  (o.orderDate == _getTodayIST() ||
+                                      (o.createdAt != null &&
+                                          o.createdAt!
+                                                  .toUtc()
+                                                  .add(const Duration(hours: 5, minutes: 30))
+                                                  .toIso8601String()
+                                                  .substring(0, 10) ==
+                                              _getTodayIST())))
                               .length ??
                           0,
                     ),
@@ -116,11 +198,21 @@ class _VendorDashboardScreenState extends ConsumerState<VendorDashboardScreen> {
                 value: ordersAsync,
                 onRetry: () => ref.invalidate(vendorOrdersProvider),
                 data: (allOrders) {
+                  final todayIST = _getTodayIST();
                   var filtered = allOrders.where((o) {
                     if (_selectedTab == 'PENDING') {
                       return o.status == 'PENDING';
                     } else {
-                      return o.status == 'COMPLETED';
+                      if (o.status != 'COMPLETED') return false;
+                      final oDate = o.orderDate ??
+                          (o.createdAt != null
+                              ? o.createdAt!
+                                  .toUtc()
+                                  .add(const Duration(hours: 5, minutes: 30))
+                                  .toIso8601String()
+                                  .substring(0, 10)
+                              : '');
+                      return oDate == todayIST;
                     }
                   }).toList();
 

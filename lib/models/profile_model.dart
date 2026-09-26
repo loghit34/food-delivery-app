@@ -20,10 +20,10 @@ class ProfileModel {
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
-      id: (json['id'] ?? json['user_id'] ?? '') as String,
-      name: (json['name'] ?? '') as String,
-      email: (json['email'] ?? '') as String,
-      role: (json['role'] ?? 'STUDENT') as String,
+      id: (json['id'] ?? json['user_id'] ?? '').toString(),
+      name: (json['name'] ?? '').toString(),
+      email: (json['email'] ?? '').toString(),
+      role: (json['role'] ?? 'STUDENT').toString(),
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString())
           : null,
