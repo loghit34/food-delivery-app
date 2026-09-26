@@ -14,7 +14,7 @@ Future<void> main() async {
   // 2. Initialize Supabase Client with client-safe public keys
   await Supabase.initialize(
     url: AppConfig.supabaseUrl,
-    anonKey: AppConfig.supabaseAnonKey,
+    publishableKey: AppConfig.supabaseAnonKey,
   );
 
   // 3. Launch App with Riverpod State Management

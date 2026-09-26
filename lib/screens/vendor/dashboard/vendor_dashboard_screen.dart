@@ -201,11 +201,7 @@ class _VendorDashboardScreenState extends ConsumerState<VendorDashboardScreen> {
         decoration: BoxDecoration(
           color: isSelected ? AppColors.secondary : Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.pad(BorderSide(
-            color: isSelected ? AppColors.secondary : AppColors.border,
-          )).borderSide.color == AppColors.secondary
-              ? null
-              : Border.all(color: AppColors.border),
+          border: isSelected ? null : Border.all(color: AppColors.border),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

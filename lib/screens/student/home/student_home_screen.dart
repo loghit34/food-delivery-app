@@ -101,7 +101,7 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: const Color(0x33FFFFFF),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(

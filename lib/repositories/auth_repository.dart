@@ -90,7 +90,7 @@ class AuthRepository {
 
     // Fallback to auth metadata
     final user = _supabase.auth.currentUser;
-    final meta = user?.user_metadata ?? {};
+    final meta = user?.userMetadata ?? {};
     return ProfileModel(
       id: userId,
       name: meta['name'] ?? user?.email?.split('@')[0] ?? 'User',
