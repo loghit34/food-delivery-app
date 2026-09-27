@@ -306,11 +306,15 @@ class _AdminUsersScreenState extends ConsumerState<AdminUsersScreen> {
                         color: AppColors.textLight,
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        'Joined ${DateFormatter.formatDate(user.createdAt!)}',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: AppColors.textLight,
+                      Flexible(
+                        child: Text(
+                          'Joined ${DateFormatter.formatDate(user.createdAt!)}',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: AppColors.textLight,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],

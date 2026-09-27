@@ -400,22 +400,26 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 children: [
                   const Text('🏪', style: TextStyle(fontSize: 24)),
                   const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Canteen Outlet',
-                        style: TextStyle(fontSize: 11, color: AppColors.textMuted),
-                      ),
-                      Text(
-                        cart.vendor?.vendorName ?? 'Canteen',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.secondary,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Canteen Outlet',
+                          style: TextStyle(fontSize: 11, color: AppColors.textMuted),
                         ),
-                      ),
-                    ],
+                        Text(
+                          cart.vendor?.vendorName ?? 'Canteen',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.secondary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -452,10 +456,15 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            '${item.item.name} × ${item.quantity}',
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                          Expanded(
+                            child: Text(
+                              '${item.item.name} × ${item.quantity}',
+                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
+                          const SizedBox(width: 8),
                           Text(
                             CurrencyFormatter.format(item.totalPrice),
                             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
@@ -482,7 +491,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Item Total', style: TextStyle(fontSize: 14, color: AppColors.textMuted)),
+                      const Flexible(
+                        child: Text(
+                          'Item Total',
+                          style: TextStyle(fontSize: 14, color: AppColors.textMuted),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
                       Text(CurrencyFormatter.format(cart.subtotal), style: const TextStyle(fontSize: 14)),
                     ],
                   ),
@@ -490,8 +505,15 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Platform Convenience Fee', style: TextStyle(fontSize: 14, color: AppColors.textMuted)),
+                      const Flexible(
+                        child: Text(
+                          'Platform Convenience Fee',
+                          style: TextStyle(fontSize: 14, color: AppColors.textMuted),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             CurrencyFormatter.format(AppConstants.originalConvenienceFee),
@@ -514,20 +536,26 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Grand Total (Payable Online)',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.secondary,
+                      const Flexible(
+                        child: Text(
+                          'Grand Total (Payable Online)',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.secondary,
+                          ),
                         ),
                       ),
-                      Text(
-                        CurrencyFormatter.format(cart.grandTotal),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.primary,
+                      const SizedBox(width: 8),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          CurrencyFormatter.format(cart.grandTotal),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.primary,
+                          ),
                         ),
                       ),
                     ],

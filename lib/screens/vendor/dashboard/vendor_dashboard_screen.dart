@@ -182,14 +182,17 @@ class _VendorDashboardScreenState extends ConsumerState<VendorDashboardScreen> {
               const SizedBox(height: 16),
 
               // Role Filter Pills (ALL / STUDENT / FACULTY)
-              Row(
-                children: [
-                  _buildRolePill('ALL', 'All Orders'),
-                  const SizedBox(width: 8),
-                  _buildRolePill('STUDENT', 'Students'),
-                  const SizedBox(width: 8),
-                  _buildRolePill('FACULTY', 'Faculty'),
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildRolePill('ALL', 'All Orders'),
+                    const SizedBox(width: 8),
+                    _buildRolePill('STUDENT', 'Students'),
+                    const SizedBox(width: 8),
+                    _buildRolePill('FACULTY', 'Faculty'),
+                  ],
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -364,42 +367,47 @@ class _VendorDashboardScreenState extends ConsumerState<VendorDashboardScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryLight,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        order.displayOrderNumber,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    if (order.customer?.role != null)
+                Expanded(
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(4),
+                          color: AppColors.primaryLight,
+                          borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
-                          order.customer!.role,
+                          order.displayOrderNumber,
                           style: const TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.secondary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.primary,
                           ),
                         ),
                       ),
-                  ],
+                      if (order.customer?.role != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF1F5F9),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            order.customer!.role,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Text(
                   DateFormatter.formatTimeAgo(order.createdAt),
                   style: const TextStyle(
@@ -432,14 +440,19 @@ class _VendorDashboardScreenState extends ConsumerState<VendorDashboardScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '${item.quantity}x ${item.itemName}',
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.secondary,
+                      Expanded(
+                        child: Text(
+                          '${item.quantity}x ${item.itemName}',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.secondary,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      const SizedBox(width: 8),
                       Text(
                         CurrencyFormatter.format(item.price * item.quantity),
                         style: const TextStyle(
@@ -454,24 +467,30 @@ class _VendorDashboardScreenState extends ConsumerState<VendorDashboardScreen> {
             ),
             const Divider(height: 16),
 
-            // Footer: Paid amount
+            // Footer: Paid amount (strictly vendor payable food amount, excluding platform fee)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'PAID ONLINE (Razorpay)',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.success,
+                const Flexible(
+                  child: Text(
+                    'PAID ONLINE (Razorpay)',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.success,
+                    ),
                   ),
                 ),
-                Text(
-                  CurrencyFormatter.format(order.totalAmount),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.secondary,
+                const SizedBox(width: 8),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    CurrencyFormatter.format(order.vendorAmount),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.secondary,
+                    ),
                   ),
                 ),
               ],

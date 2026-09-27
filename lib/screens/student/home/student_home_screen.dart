@@ -90,12 +90,14 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Hello, $firstName! 👋',
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
+                        Expanded(
+                          child: Text(
+                            'Hello, $firstName! 👋',
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         if (profile != null)
@@ -314,11 +316,15 @@ class _StudentHomeScreenState extends ConsumerState<StudentHomeScreen> {
                   children: [
                     const Icon(Icons.location_on_outlined, size: 14, color: AppColors.textMuted),
                     const SizedBox(width: 4),
-                    Text(
-                      vendor.location ?? 'Campus Food Court',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.textMuted,
+                    Expanded(
+                      child: Text(
+                        vendor.location ?? 'Campus Food Court',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textMuted,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],

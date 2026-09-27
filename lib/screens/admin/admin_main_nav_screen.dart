@@ -27,6 +27,14 @@ class _AdminMainNavScreenState extends ConsumerState<AdminMainNavScreen> {
     _currentIndex = widget.initialIndex;
   }
 
+  @override
+  void didUpdateWidget(covariant AdminMainNavScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialIndex != widget.initialIndex) {
+      setState(() => _currentIndex = widget.initialIndex);
+    }
+  }
+
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;

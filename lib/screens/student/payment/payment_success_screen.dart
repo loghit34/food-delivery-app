@@ -32,7 +32,10 @@ class PaymentSuccessScreen extends StatelessWidget {
         body: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width < 360 ? 14.0 : 24.0,
+                vertical: 24.0,
+              ),
               child: Container(
                 constraints: const BoxConstraints(maxWidth: 500),
                 child: Card(
@@ -43,7 +46,10 @@ class PaymentSuccessScreen extends StatelessWidget {
                   ),
                   color: Colors.white,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 36.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width < 360 ? 14.0 : 24.0,
+                      vertical: 28.0,
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
@@ -104,19 +110,25 @@ class PaymentSuccessScreen extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    'Daily Order Number:',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: AppColors.textMuted,
+                                  const Flexible(
+                                    child: Text(
+                                      'Daily Order Number:',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: AppColors.textMuted,
+                                      ),
                                     ),
                                   ),
-                                  Text(
-                                    '#$dailyNum',
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w900,
-                                      color: AppColors.primary,
+                                  const SizedBox(width: 8),
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      '#$dailyNum',
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w900,
+                                        color: AppColors.primary,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -127,19 +139,28 @@ class PaymentSuccessScreen extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    'Internal Order ID:',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: AppColors.textMuted,
+                                  const Flexible(
+                                    child: Text(
+                                      'Internal Order ID:',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: AppColors.textMuted,
+                                      ),
                                     ),
                                   ),
-                                  Text(
-                                    '#ORD-$displayOrderCode',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.secondary,
+                                  const SizedBox(width: 8),
+                                  Flexible(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        '#ORD-$displayOrderCode',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.secondary,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -150,13 +171,16 @@ class PaymentSuccessScreen extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    'Payment:',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: AppColors.textMuted,
+                                  const Flexible(
+                                    child: Text(
+                                      'Payment:',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: AppColors.textMuted,
+                                      ),
                                     ),
                                   ),
+                                  const SizedBox(width: 8),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                                     decoration: BoxDecoration(
@@ -180,13 +204,16 @@ class PaymentSuccessScreen extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
-                                    'Order Status:',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: AppColors.textMuted,
+                                  const Flexible(
+                                    child: Text(
+                                      'Order Status:',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: AppColors.textMuted,
+                                      ),
                                     ),
                                   ),
+                                  const SizedBox(width: 8),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                                     decoration: BoxDecoration(

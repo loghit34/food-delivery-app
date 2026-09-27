@@ -31,6 +31,14 @@ class _StudentMainNavScreenState extends ConsumerState<StudentMainNavScreen> {
   }
 
   @override
+  void didUpdateWidget(covariant StudentMainNavScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialIndex != widget.initialIndex) {
+      setState(() => _currentIndex = widget.initialIndex);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final cartState = ref.watch(cartProvider);
     final cartItemCount = cartState.totalItemCount;

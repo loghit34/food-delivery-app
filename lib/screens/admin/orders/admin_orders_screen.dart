@@ -214,7 +214,6 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppColors.border),
         boxShadow: [
@@ -225,10 +224,14 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
           ),
         ],
       ),
-      child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        shape: const Border(),
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        clipBehavior: Clip.antiAlias,
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          shape: const Border(),
         leading: Container(
           width: 44,
           height: 44,
@@ -259,8 +262,11 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
                   fontSize: 15,
                   color: AppColors.textPrimary,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
+            const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
@@ -290,12 +296,16 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
                   color: AppColors.textSecondary,
                 ),
                 const SizedBox(width: 4),
-                Text(
-                  '${order.profile?.name ?? 'Student'} (${order.profile?.role ?? 'STUDENT'})',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
+                Expanded(
+                  child: Text(
+                    '${order.profile?.name ?? 'Student'} (${order.profile?.role ?? 'STUDENT'})',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -320,12 +330,16 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Text(
-                  CurrencyFormatter.format(order.totalAmount),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: AppColors.primary,
+                const SizedBox(width: 8),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    CurrencyFormatter.format(order.totalAmount),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
               ],
@@ -348,16 +362,22 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Food Items Total:',
-                      style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                    const Flexible(
+                      child: Text(
+                        'Item Subtotal:',
+                        style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                      ),
                     ),
-                    Text(
-                      CurrencyFormatter.format(order.itemTotal),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                    const SizedBox(width: 8),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        CurrencyFormatter.format(order.orderSubtotal),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                     ),
                   ],
@@ -366,16 +386,46 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Platform Convenience Fee:',
-                      style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                    const Flexible(
+                      child: Text(
+                        'Platform/Maintenance Fee:',
+                        style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                      ),
                     ),
-                    Text(
-                      CurrencyFormatter.format(order.convenienceFee),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                    const SizedBox(width: 8),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        CurrencyFormatter.format(order.platformFee),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Flexible(
+                      child: Text(
+                        'Vendor Amount:',
+                        style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        CurrencyFormatter.format(order.vendorAmount),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF16A34A),
+                        ),
                       ),
                     ),
                   ],
@@ -384,20 +434,26 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Total Paid:',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                    const Flexible(
+                      child: Text(
+                        'Customer Paid Total:',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                     ),
-                    Text(
-                      CurrencyFormatter.format(order.totalAmount),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
+                    const SizedBox(width: 8),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        CurrencyFormatter.format(order.customerTotal),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ),
                   ],
@@ -452,14 +508,20 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
                             fontSize: 13,
                             color: AppColors.textPrimary,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Text(
-                        CurrencyFormatter.format(item.price * item.quantity),
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textSecondary,
+                      const SizedBox(width: 8),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          CurrencyFormatter.format(item.price * item.quantity),
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ),
                     ],
@@ -469,9 +531,13 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
           ],
 
           // Payment & Timing Details
-          Row(
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            runSpacing: 8,
+            spacing: 12,
             children: [
-              Expanded(
+              ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 140),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -493,6 +559,7 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
                         }
                       },
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Flexible(
                             child: Text(
@@ -521,7 +588,7 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
                 ),
               ),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     'Order Placed At',
@@ -541,6 +608,7 @@ class _AdminOrdersScreenState extends ConsumerState<AdminOrdersScreen> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }

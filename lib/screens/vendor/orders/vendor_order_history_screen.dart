@@ -82,14 +82,17 @@ class _VendorOrderHistoryScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Role Filter Pills
-              Row(
-                children: [
-                  _buildRoleFilterPill('ALL', 'All Orders'),
-                  const SizedBox(width: 8),
-                  _buildRoleFilterPill('STUDENT', 'Students'),
-                  const SizedBox(width: 8),
-                  _buildRoleFilterPill('FACULTY', 'Faculty'),
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _buildRoleFilterPill('ALL', 'All Orders'),
+                    const SizedBox(width: 8),
+                    _buildRoleFilterPill('STUDENT', 'Students'),
+                    const SizedBox(width: 8),
+                    _buildRoleFilterPill('FACULTY', 'Faculty'),
+                  ],
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -168,18 +171,21 @@ class _VendorOrderHistoryScreenState
                       final isToday = dateKey == todayIST;
                       final totalRevenue = dayOrders.fold(
                         0.0,
-                        (sum, o) => sum + o.vendorEarnings,
+                        (sum, o) => sum + o.vendorAmount,
                       );
 
                       return Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(color: AppColors.border),
                         ),
-                        child: Theme(
-                          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                          child: ExpansionTile(
+                        child: Material(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                          clipBehavior: Clip.antiAlias,
+                          child: Theme(
+                            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                            child: ExpansionTile(
                             initiallyExpanded: isToday,
                             tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             title: Row(
@@ -217,16 +223,22 @@ class _VendorOrderHistoryScreenState
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    '${dayOrders.length} order${dayOrders.length > 1 ? 's' : ''} served',
-                                    style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
+                                  Flexible(
+                                    child: Text(
+                                      '${dayOrders.length} order${dayOrders.length > 1 ? 's' : ''} served',
+                                      style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
+                                    ),
                                   ),
-                                  Text(
-                                    'Revenue: ${CurrencyFormatter.format(totalRevenue)}',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w800,
-                                      color: Color(0xFF16A34A),
+                                  const SizedBox(width: 8),
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      'Revenue: ${CurrencyFormatter.format(totalRevenue)}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0xFF16A34A),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -248,8 +260,9 @@ class _VendorOrderHistoryScreenState
                             ],
                           ),
                         ),
-                      );
-                    },
+                      ),
+                    );
+                  },
                   );
                 },
               ),
@@ -304,48 +317,55 @@ class _VendorOrderHistoryScreenState
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryLight,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      order.displayOrderNumber,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.primary,
+              Expanded(
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryLight,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        order.displayOrderNumber,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    '#ORD-$displayOrderCode',
-                    style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
-                  ),
-                  const SizedBox(width: 6),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE2E8F0),
-                      borderRadius: BorderRadius.circular(4),
+                    Text(
+                      '#ORD-$displayOrderCode',
+                      style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
                     ),
-                    child: Text(
-                      role,
-                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE2E8F0),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        role,
+                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              Text(
-                CurrencyFormatter.format(order.vendorEarnings),
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.secondary,
+              const SizedBox(width: 8),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  CurrencyFormatter.format(order.vendorAmount),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.secondary,
+                  ),
                 ),
               ),
             ],
@@ -362,10 +382,15 @@ class _VendorOrderHistoryScreenState
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '${i.quantity}× ${i.itemName}',
-                    style: const TextStyle(fontSize: 12, color: AppColors.secondary),
+                  Expanded(
+                    child: Text(
+                      '${i.quantity}× ${i.itemName}',
+                      style: const TextStyle(fontSize: 12, color: AppColors.secondary),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   Text(
                     CurrencyFormatter.format(i.price * i.quantity),
                     style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
@@ -378,12 +403,17 @@ class _VendorOrderHistoryScreenState
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '✓ Completed ${order.completedAt != null ? DateFormatter.formatDateTime(order.completedAt) : ''}',
-                style: const TextStyle(fontSize: 11, color: Color(0xFF16A34A), fontWeight: FontWeight.w600),
+              Expanded(
+                child: Text(
+                  '✓ Completed ${order.completedAt != null ? DateFormatter.formatDateTime(order.completedAt) : ''}',
+                  style: const TextStyle(fontSize: 11, color: Color(0xFF16A34A), fontWeight: FontWeight.w600),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
+              const SizedBox(width: 8),
               const Text(
-                '💳 PAID',
+                '💳 PAID ONLINE',
                 style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: Color(0xFF16A34A)),
               ),
             ],

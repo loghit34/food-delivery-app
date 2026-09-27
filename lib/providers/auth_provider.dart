@@ -21,6 +21,7 @@ final authStateProvider = StreamProvider<AuthState>((ref) {
 /// Fetches and caches current user's profile
 final userProfileProvider = FutureProvider<ProfileModel?>((ref) async {
   final authRepo = ref.watch(authRepositoryProvider);
+  ref.watch(authStateProvider);
   final user = authRepo.currentUser;
   if (user == null) return null;
   return await authRepo.getProfile(user.id);

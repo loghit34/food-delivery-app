@@ -65,25 +65,30 @@ class CartScreen extends ConsumerWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Ordering from',
-                              style: TextStyle(fontSize: 11, color: AppColors.textMuted),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              '🍱 ${cartState.vendor?.vendorName ?? 'Canteen'}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.primary,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Ordering from',
+                                style: TextStyle(fontSize: 11, color: AppColors.textMuted),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 2),
+                              Text(
+                                '🍱 ${cartState.vendor?.vendorName ?? 'Canteen'}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.primary,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
                         ),
-                        if (cartState.vendor?.id != null)
+                        if (cartState.vendor?.id != null) ...[
+                          const SizedBox(width: 8),
                           OutlinedButton(
                             onPressed: () => context.push('/menu/${cartState.vendor!.id}'),
                             style: OutlinedButton.styleFrom(
@@ -102,6 +107,7 @@ class CartScreen extends ConsumerWidget {
                               ),
                             ),
                           ),
+                        ],
                       ],
                     ),
                   ),
@@ -263,11 +269,15 @@ class CartScreen extends ConsumerWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              'Convenience Fee',
-                              style: TextStyle(fontSize: 14, color: AppColors.textMuted),
+                            const Flexible(
+                              child: Text(
+                                'Convenience Fee',
+                                style: TextStyle(fontSize: 14, color: AppColors.textMuted),
+                              ),
                             ),
+                            const SizedBox(width: 8),
                             Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
                                   CurrencyFormatter.format(AppConstants.originalConvenienceFee),
@@ -294,20 +304,26 @@ class CartScreen extends ConsumerWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              'To Pay',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.secondary,
+                            const Flexible(
+                              child: Text(
+                                'To Pay',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.secondary,
+                                ),
                               ),
                             ),
-                            Text(
-                              CurrencyFormatter.format(cartState.grandTotal),
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                color: AppColors.primary,
+                            const SizedBox(width: 8),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                CurrencyFormatter.format(cartState.grandTotal),
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w900,
+                                  color: AppColors.primary,
+                                ),
                               ),
                             ),
                           ],

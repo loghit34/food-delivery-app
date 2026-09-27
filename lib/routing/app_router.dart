@@ -13,12 +13,27 @@ import '../screens/student/payment/payment_success_screen.dart';
 import '../screens/vendor/vendor_main_nav_screen.dart';
 import '../screens/admin/admin_main_nav_screen.dart';
 
+class AppRouterNotifier extends ChangeNotifier {
+  final Ref _ref;
+
+  AppRouterNotifier(this._ref) {
+    _ref.listen(userProfileProvider, (_, __) => notifyListeners());
+    _ref.listen(authStateProvider, (prev, next) {
+      final prevUser = prev?.value?.session?.user;
+      final nextUser = next.value?.session?.user;
+      if (prevUser?.id != nextUser?.id) {
+        notifyListeners();
+      }
+    });
+  }
+}
+
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final profileAsync = ref.watch(userProfileProvider);
-  final authRepo = ref.watch(authRepositoryProvider);
+  final notifier = AppRouterNotifier(ref);
 
   return GoRouter(
     initialLocation: '/splash',
+    refreshListenable: notifier,
     routes: [
       // Splash & Auth
       GoRoute(
@@ -120,20 +135,31 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
     ],
     redirect: (BuildContext context, GoRouterState state) {
+      final authRepo = ref.read(authRepositoryProvider);
+      final profileAsync = ref.read(userProfileProvider);
       final isAuth = authRepo.currentUser != null;
       final loc = state.matchedLocation;
       final isLoggingIn = loc == '/login' || loc == '/register';
       final isSplash = loc == '/splash';
 
+      // Keep splash screen displayed during initial application startup
+      if (profileAsync.isLoading && isSplash) {
+        return null;
+      }
+
       if (!isAuth) {
         return isLoggingIn ? null : '/login';
+      }
+
+      // Handle profile errors explicitly: display on splash without redirect loop
+      if (profileAsync.hasError) {
+        return isSplash ? null : (isLoggingIn ? null : '/splash');
       }
 
       // User is authenticated
       final profile = profileAsync.value;
       if (profile == null) {
-        // While profile is loading from DB, keep on splash or current location
-        return isLoggingIn ? '/splash' : null;
+        return isSplash ? null : null;
       }
 
       // Role-based redirection from auth/splash screens

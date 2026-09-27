@@ -97,10 +97,14 @@ class _VendorMenuScreenState extends ConsumerState<VendorMenuScreen> {
               Text(
                 vendor.vendorName,
                 style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               Text(
                 '📍 ${vendor.location ?? 'Campus Food Court'}',
                 style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
@@ -326,24 +330,31 @@ class _VendorMenuScreenState extends ConsumerState<VendorMenuScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${cart.totalItemCount} item${cart.totalItemCount > 1 ? 's' : ''}',
-                  style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
-                ),
-                Text(
-                  CurrencyFormatter.format(cart.subtotal),
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.secondary,
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${cart.totalItemCount} item${cart.totalItemCount > 1 ? 's' : ''}',
+                    style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
                   ),
-                ),
-              ],
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      CurrencyFormatter.format(cart.subtotal),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.secondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
+            const SizedBox(width: 12),
             ElevatedButton.icon(
               onPressed: () => context.push('/cart'),
               icon: const Icon(Icons.shopping_cart_outlined, size: 18),

@@ -31,6 +31,14 @@ class _VendorMainNavScreenState extends ConsumerState<VendorMainNavScreen> {
   }
 
   @override
+  void didUpdateWidget(covariant VendorMainNavScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialIndex != widget.initialIndex) {
+      setState(() => _currentIndex = widget.initialIndex);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ordersAsync = ref.watch(vendorOrdersProvider);
     final pendingCount = ordersAsync.value

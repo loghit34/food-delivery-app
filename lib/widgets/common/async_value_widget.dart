@@ -16,6 +16,11 @@ class AsyncValueWidget<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // If provider already has cached or previous data, keep rendering it smoothly during background refreshes
+    if (value.hasValue) {
+      return data(value.value as T);
+    }
+
     return value.when(
       data: data,
       loading: () => const Center(

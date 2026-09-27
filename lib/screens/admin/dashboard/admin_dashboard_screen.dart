@@ -24,6 +24,12 @@ class AdminDashboardScreen extends ConsumerWidget {
     final totalRevenue = ordersAsync.value
             ?.fold(0.0, (sum, o) => sum + o.totalAmount) ??
         0.0;
+    final vendorFoodRevenue = ordersAsync.value
+            ?.fold(0.0, (sum, o) => sum + o.vendorAmount) ??
+        0.0;
+    final platformFeeRevenue = ordersAsync.value
+            ?.fold(0.0, (sum, o) => sum + o.platformFee) ??
+        0.0;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -135,6 +141,30 @@ class AdminDashboardScreen extends ConsumerWidget {
                       value: CurrencyFormatter.format(totalRevenue),
                       color: AppColors.primary,
                       bgColor: AppColors.primaryLight,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildMetricCard(
+                      icon: Icons.store_mall_directory_outlined,
+                      title: 'Food (Vendors)',
+                      value: CurrencyFormatter.format(vendorFoodRevenue),
+                      color: const Color(0xFF0D9488),
+                      bgColor: const Color(0xFFF0FDFA),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildMetricCard(
+                      icon: Icons.account_balance_outlined,
+                      title: 'Platform Fees',
+                      value: CurrencyFormatter.format(platformFeeRevenue),
+                      color: const Color(0xFF6366F1),
+                      bgColor: const Color(0xFFEEF2FF),
                     ),
                   ),
                 ],

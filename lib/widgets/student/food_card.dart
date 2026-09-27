@@ -115,6 +115,8 @@ class FoodCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     item.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -134,14 +136,21 @@ class FoodCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        CurrencyFormatter.format(item.price),
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                          color: isAvail ? AppColors.secondary : AppColors.textMuted,
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            CurrencyFormatter.format(item.price),
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                              color: isAvail ? AppColors.secondary : AppColors.textMuted,
+                            ),
+                          ),
                         ),
                       ),
+                      const SizedBox(width: 8),
                       _buildActionWidget(),
                     ],
                   ),

@@ -125,12 +125,15 @@ class _VendorMenuManagerScreenState
                     const SizedBox(height: 14),
 
                     // Availability switch
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: const Text('In Stock / Available', style: TextStyle(fontWeight: FontWeight.w600)),
-                      value: isAvailable,
-                      activeThumbColor: AppColors.primary,
-                      onChanged: (val) => setModalState(() => isAvailable = val),
+                    Material(
+                      color: Colors.transparent,
+                      child: SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('In Stock / Available', style: TextStyle(fontWeight: FontWeight.w600)),
+                        value: isAvailable,
+                        activeThumbColor: AppColors.primary,
+                        onChanged: (val) => setModalState(() => isAvailable = val),
+                      ),
                     ),
                     const SizedBox(height: 16),
 
@@ -451,8 +454,11 @@ class _VendorMenuManagerScreenState
                                                 fontWeight: FontWeight.w700,
                                                 color: AppColors.secondary,
                                               ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
+                                          const SizedBox(width: 8),
                                           Text(
                                             CurrencyFormatter.format(item.price),
                                             style: const TextStyle(
@@ -490,8 +496,11 @@ class _VendorMenuManagerScreenState
                               ],
                             ),
                             const Divider(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 8,
+                              runSpacing: 8,
                               children: [
                                 // Stock Toggle Button
                                 ElevatedButton.icon(
@@ -513,6 +522,7 @@ class _VendorMenuManagerScreenState
                                   ),
                                 ),
                                 Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     OutlinedButton.icon(
                                       onPressed: () => _openDishModal(

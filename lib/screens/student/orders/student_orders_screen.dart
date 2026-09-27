@@ -191,7 +191,10 @@ class _StudentOrdersScreenState extends ConsumerState<StudentOrdersScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 6,
+                      runSpacing: 2,
                       children: [
                         Text(
                           'Order ${order.displayOrderNumber}',
@@ -201,7 +204,6 @@ class _StudentOrdersScreenState extends ConsumerState<StudentOrdersScreen> {
                             color: AppColors.secondary,
                           ),
                         ),
-                        const SizedBox(width: 6),
                         Text(
                           '(#ORD-$displayOrderCode)',
                           style: const TextStyle(
@@ -219,20 +221,26 @@ class _StudentOrdersScreenState extends ConsumerState<StudentOrdersScreen> {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      '🏪 ${order.vendor?.vendorName ?? 'Canteen'} ${order.vendor?.location != null ? '(${order.vendor!.location})' : ''}',
+                      '🏪 ${order.vendor?.vendorName ?? 'Canteen'}${order.vendor?.location != null ? ' (${order.vendor!.location})' : ''}',
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: AppColors.primary,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
+              const SizedBox(width: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Row(
+                  Wrap(
+                    alignment: WrapAlignment.end,
+                    spacing: 4,
+                    runSpacing: 4,
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -249,7 +257,6 @@ class _StudentOrdersScreenState extends ConsumerState<StudentOrdersScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 4),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
@@ -268,12 +275,15 @@ class _StudentOrdersScreenState extends ConsumerState<StudentOrdersScreen> {
                     ],
                   ),
                   const SizedBox(height: 6),
-                  Text(
-                    CurrencyFormatter.format(order.totalAmount),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.secondary,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      CurrencyFormatter.format(order.totalAmount),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.secondary,
+                      ),
                     ),
                   ),
                 ],
@@ -300,10 +310,15 @@ class _StudentOrdersScreenState extends ConsumerState<StudentOrdersScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '${i.quantity}× ${i.itemName}',
-                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                    Expanded(
+                      child: Text(
+                        '${i.quantity}× ${i.itemName}',
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
+                    const SizedBox(width: 8),
                     Text(
                       CurrencyFormatter.format(i.price * i.quantity),
                       style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
@@ -319,10 +334,13 @@ class _StudentOrdersScreenState extends ConsumerState<StudentOrdersScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Platform Convenience Fee',
-                  style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                const Expanded(
+                  child: Text(
+                    'Platform Convenience Fee',
+                    style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+                  ),
                 ),
+                const SizedBox(width: 8),
                 Text(
                   CurrencyFormatter.format(order.convenienceFee),
                   style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
@@ -393,10 +411,14 @@ class _StudentOrdersScreenState extends ConsumerState<StudentOrdersScreen> {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: const Color(0xFFBBF7D0)),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                runSpacing: 4,
                 children: [
                   const Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text('✓ ', style: TextStyle(color: Color(0xFF166534), fontWeight: FontWeight.w900)),
                       Text(

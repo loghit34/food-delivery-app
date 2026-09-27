@@ -243,6 +243,8 @@ class _AdminVendorsScreenState extends ConsumerState<AdminVendorsScreen> {
                             ? AppColors.textPrimary
                             : AppColors.textSecondary,
                       ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Row(
@@ -310,20 +312,24 @@ class _AdminVendorsScreenState extends ConsumerState<AdminVendorsScreen> {
           const Divider(height: 1, color: AppColors.border),
           const SizedBox(height: 8),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                vendor.isActive
-                    ? 'Accepting online student orders'
-                    : 'Currently disabled by admin',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontStyle: FontStyle.italic,
-                  color: vendor.isActive
-                      ? AppColors.textSecondary
-                      : AppColors.danger,
+              Expanded(
+                child: Text(
+                  vendor.isActive
+                      ? 'Accepting online student orders'
+                      : 'Currently disabled by admin',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                    color: vendor.isActive
+                        ? AppColors.textSecondary
+                        : AppColors.danger,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 8),
               OutlinedButton.icon(
                 onPressed: () => _toggleVendorStatus(vendor),
                 style: OutlinedButton.styleFrom(
@@ -446,9 +452,13 @@ class _CreateVendorModalState extends ConsumerState<_CreateVendorModal> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Add New Canteen Outlet',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  const Expanded(
+                    child: Text(
+                      'Add New Canteen Outlet',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   IconButton(
                     icon: const Icon(Icons.close),
